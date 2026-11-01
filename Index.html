@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ainslee’s Noah Hub</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐛</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Caveat:wght@600&display=swap" rel="stylesheet">
+<style>
+
+  :root {
+    --birch: #E4F1FB;
+    --paper: #FFFFFF;
+    --pine: #1B3A4B;
+    --pine-soft: #4D6878;
+    --cranberry: #2C6E9C;
+    --goldenrod: #8CC8EE;
+    --line: #BFDDF2;
+    --card: rgba(255,255,255,.78);
+    color-scheme: light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --birch: #0F1F2A;
+      --paper: #162A38;
+      --pine: #E6F1F8;
+      --pine-soft: #A7C1D2;
+      --cranberry: #9DD3F5;
+      --goldenrod: #9DD3F5;
+      --line: #3A4F72;
+      --card: rgba(20,30,58,.72);
+      color-scheme: dark;
+    }
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: #CFE8F7;
+    color: var(--pine);
+    font-family: "Newsreader", Georgia, "Times New Roman", serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+
+  /* Whimsical sky: dusk over a coral horizon, streaked clouds */
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(90% 30% at 45% 100%, rgba(255,150,110,.75), transparent 70%),
+      linear-gradient(180deg, #A9B3C4 0%, #B9BAC8 14%, #CDB6C2 30%, #E3A9AE 46%, #F09A8C 60%, #F5876E 72%, #F7975F 84%, #F4AE6E 94%, #EFC08A 100%);
+  }
+  .sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .streak {
+    position: absolute; border-radius: 50%;
+    top: var(--t); left: var(--l); width: max(var(--w), 720px); height: min(var(--h), 70px);
+    background:
+      radial-gradient(ellipse at 50% 72%, rgba(245,150,140,.55), transparent 62%),
+      radial-gradient(ellipse 30% 40% at 30% 45%, var(--c) 0%, transparent 100%),
+      radial-gradient(ellipse 35% 45% at 68% 55%, var(--c) 0%, transparent 100%),
+      radial-gradient(ellipse at center, var(--c) 0%, var(--c) 42%, transparent 70%);
+    opacity: var(--o);
+    filter: blur(3px);
+    animation: drift var(--d) ease-in-out infinite alternate;
+  }
+  @keyframes drift { from { transform: translateX(-3vw); } to { transform: translateX(3vw); } }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #2A2840; }
+    body::before {
+      background:
+        radial-gradient(90% 28% at 45% 100%, rgba(230,120,90,.6), transparent 70%),
+        linear-gradient(180deg, #171B2E 0%, #23253D 20%, #3A3150 40%, #5C3F5C 58%, #8C4D5E 74%, #BC6460 88%, #D88763 100%);
+    }
+    .streak {
+      background:
+        radial-gradient(ellipse at 50% 72%, rgba(210,110,110,.35), transparent 62%),
+        radial-gradient(ellipse at center, #2C2940 0%, #2C2940 38%, transparent 70%);
+    }
+  }
+
+  main { max-width: 720px; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
+  .display { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; }
+
+  .hero { padding: 1.5rem 0 2rem; text-shadow: 0 0 18px rgba(255,240,235,.55); }
+  .hero h1 {
+    font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 800; font-size: clamp(2.8rem, 11vw, 5.4rem);
+    line-height: .92; letter-spacing: -.035em; margin: 0 0 1rem;
+  }
+  .hero h1 span { display: block; color: var(--cranberry); }
+  .hero p { margin: 0; max-width: 30rem; }
+  .stamp {
+    font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 800;
+    color: var(--cranberry); border: 3px solid var(--cranberry);
+    display: inline-block; padding: .3rem .8rem; transform: rotate(-3deg);
+    margin-bottom: 1.25rem; font-size: 1rem; text-shadow: none;
+  }
+
+  .card {
+    background: var(--card); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border: 2px solid var(--line); border-radius: 6px;
+    padding: 1.5rem 1.35rem; margin-top: 1.25rem;
+  }
+  .card h2 {
+    font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 800; font-size: 1.6rem; letter-spacing: -.01em; line-height: 1.1; margin: 0 0 1rem;
+  }
+  .muted { color: var(--pine-soft); }
+  .small { font-size: .95rem; }
+
+  /* Countdown: the one loud element */
+  .countdown { border-color: var(--cranberry); border-width: 3px; }
+  .countdown .next { margin: 0 0 1rem; font-size: 1.1rem; }
+  .countdown .next b { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-size: 1.35rem; display: block; line-height: 1.15; }
+  .clock { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
+  .unit { text-align: center; }
+  .unit .n {
+    font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 800;
+    font-size: clamp(2.2rem, 11vw, 3.6rem); line-height: 1; color: var(--cranberry);
+    font-variant-numeric: tabular-nums;
+  }
+  .unit .l { font-size: .9rem; color: var(--pine-soft); }
+  .countdown .when { margin: 1rem 0 0; }
+
+  /* Status board */
+  ol.status { list-style: none; padding: 0; margin: 0; }
+  ol.status li { display: grid; grid-template-columns: 2rem 1fr; gap: .75rem; align-items: center; padding: .6rem 0; border-bottom: 1px solid var(--line); }
+  ol.status li:last-child { border-bottom: 0; }
+  .dot { width: 2rem; height: 2rem; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; border: 2px solid var(--line); color: var(--pine-soft); font-size: .95rem; }
+  li.done .dot { background: var(--cranberry); border-color: var(--cranberry); color: var(--paper); }
+  li.now .dot { border-color: var(--cranberry); color: var(--cranberry); animation: pulse 1.8s ease-in-out infinite; }
+  li.done .t { color: var(--pine-soft); text-decoration: line-through; text-decoration-thickness: 1px; }
+  li.now .t { font-weight: 500; }
+  li.now .t::after { content: "Working on it"; display: block; font-size: .85rem; color: var(--cranberry); }
+  @keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(44,110,156,.18); } }
+
+  /* Song of the day */
+  .song-title { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 800; font-size: 2rem; line-height: 1.05; margin: 0 0 .5rem; }
+  .song-note { margin: 0 0 1rem; }
+  .song-note::before { content: "Dad: "; font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.3rem; color: var(--cranberry); }
+  .player iframe { width: 100%; border: 0; border-radius: 12px; display: block; }
+  .actions { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+  .btn {
+    appearance: none; font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 700; font-size: 1rem;
+    padding: .7rem 1.2rem; border-radius: 999px; border: 2px solid var(--pine);
+    background: var(--pine); color: var(--paper); cursor: pointer; text-decoration: none; display: inline-block;
+  }
+  .btn.ghost { background: transparent; color: var(--pine); }
+  .btn:focus-visible, summary:focus-visible { outline: 3px solid var(--goldenrod); outline-offset: 3px; }
+
+  /* Updates */
+  .update { padding: .9rem 0; border-bottom: 1px solid var(--line); }
+  .update:last-child { border-bottom: 0; padding-bottom: 0; }
+  .update:first-of-type { padding-top: 0; }
+  .update time { font-size: .9rem; color: var(--pine-soft); }
+  .update h3 { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-size: 1.2rem; margin: .1rem 0 .3rem; line-height: 1.2; }
+  .update p { margin: 0; }
+  .update a { color: var(--cranberry); }
+
+  /* Timeline */
+  ol.timeline { list-style: none; padding: 0; margin: 0; }
+  ol.timeline li { display: grid; grid-template-columns: 5.5rem 1fr; gap: .9rem; padding: .7rem 0; border-bottom: 1px solid var(--line); }
+  ol.timeline li:last-child { border-bottom: 0; }
+  ol.timeline .d { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 800; color: var(--cranberry); line-height: 1.2; }
+  ol.timeline li.past .d, ol.timeline li.past b { color: var(--pine-soft); text-decoration: line-through; text-decoration-thickness: 1px; }
+  ol.timeline b { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; display: block; }
+  ol.timeline span { font-size: .95rem; color: var(--pine-soft); }
+
+  /* Getting ready */
+  .prep-item { padding: .6rem 0; border-bottom: 1px solid var(--line); }
+  .prep-item:last-child { border-bottom: 0; }
+  .prep-item b { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; display: block; }
+  ol.setlist { margin: .25rem 0 0; padding-left: 1.5rem; }
+  ol.setlist li { padding: .15rem 0; }
+  h3.sub { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-size: 1.15rem; margin: 1.25rem 0 .4rem; }
+
+  .ig blockquote.instagram-media { margin: 0 auto 1rem !important; min-width: 0 !important; max-width: 100% !important; }
+
+  details.note summary { cursor: pointer; font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 700; font-size: 1.15rem; }
+  details.note p { margin: 1rem 0 0; }
+  .sig { font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.9rem; color: var(--cranberry); line-height: 1; margin-top: .75rem; }
+
+  footer { margin-top: 3rem; text-align: center; font-size: .9rem; color: var(--pine-soft); text-shadow: 0 0 14px rgba(255,240,235,.6); }
+  [hidden] { display: none !important; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (prefers-reduced-motion: reduce) {
+    li.now .dot { animation: none; }
+    .streak { animation: none; }
+  }
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true">
+  <div class="streak" style="--t:1vh;--l:-10vw;--w:60vw;--h:9vh;--c:#6E687E;--o:0.75;--d:60s"></div>
+  <div class="streak" style="--t:4vh;--l:35vw;--w:80vw;--h:12vh;--c:#655F77;--o:0.8;--d:75s"></div>
+  <div class="streak" style="--t:10vh;--l:-20vw;--w:70vw;--h:8vh;--c:#736A80;--o:0.7;--d:68s"></div>
+  <div class="streak" style="--t:15vh;--l:20vw;--w:95vw;--h:14vh;--c:#5F5A72;--o:0.75;--d:82s"></div>
+  <div class="streak" style="--t:24vh;--l:-15vw;--w:65vw;--h:9vh;--c:#7A6D82;--o:0.7;--d:70s"></div>
+  <div class="streak" style="--t:28vh;--l:45vw;--w:70vw;--h:8vh;--c:#7E6E83;--o:0.65;--d:88s"></div>
+  <div class="streak" style="--t:37vh;--l:-25vw;--w:85vw;--h:10vh;--c:#866E82;--o:0.65;--d:76s"></div>
+  <div class="streak" style="--t:45vh;--l:30vw;--w:80vw;--h:7vh;--c:#8E6E7F;--o:0.6;--d:64s"></div>
+  <div class="streak" style="--t:53vh;--l:-10vw;--w:70vw;--h:6vh;--c:#966D7C;--o:0.55;--d:90s"></div>
+  <div class="streak" style="--t:61vh;--l:40vw;--w:60vw;--h:5vh;--c:#9E6E7A;--o:0.5;--d:70s"></div>
+  <div class="streak" style="--t:70vh;--l:-15vw;--w:75vw;--h:4vh;--c:#A56F78;--o:0.45;--d:80s"></div>
+  <div class="streak" style="--t:79vh;--l:25vw;--w:70vw;--h:3.5vh;--c:#AB7177;--o:0.4;--d:66s"></div>
+</div>
+<main>
+  <header class="hero">
+    <div class="stamp">Gift B locked</div>
+    <h1>Ainslee’s <span>Noah hub.</span></h1>
+    <p>Mission control from here to Ford Field. Countdowns, my progress, a song a day, and everything Noah. Check back, it keeps changing.</p>
+  </header>
+
+  <section class="card countdown" aria-labelledby="cdh">
+    <h2 id="cdh" hidden>Countdown</h2>
+    <p class="next"><span class="muted small">Next up</span><b id="cdTitle">Loading</b></p>
+    <div class="clock" role="timer" aria-live="off">
+      <div class="unit"><div class="n" id="cdD">0</div><div class="l">days</div></div>
+      <div class="unit"><div class="n" id="cdH">0</div><div class="l">hours</div></div>
+      <div class="unit"><div class="n" id="cdM">0</div><div class="l">minutes</div></div>
+      <div class="unit"><div class="n" id="cdS">0</div><div class="l">seconds</div></div>
+    </div>
+    <p class="when muted small" id="cdWhen"></p>
+  </section>
+
+  <section class="card" aria-labelledby="sth">
+    <h2 id="sth">Dad’s status board</h2>
+    <ol class="status" id="status"></ol>
+  </section>
+
+  <section class="card" aria-labelledby="sgh">
+    <h2 id="sgh">Song of the day</h2>
+    <p class="song-title" id="songTitle"></p>
+    <p class="song-note" id="songNote" hidden></p>
+    <div class="player" id="player"></div>
+    <div class="actions">
+      <a class="btn" id="songOpen" href="#" target="_blank" rel="noopener">Play on Apple Music</a>
+      <button class="btn ghost" id="songShuffle">Play a different one</button>
+    </div>
+  </section>
+
+  <section class="card" aria-labelledby="uph">
+    <h2 id="uph">Updates from Dad</h2>
+    <div id="updates"></div>
+  </section>
+
+  <section class="card" aria-labelledby="tlh">
+    <h2 id="tlh">Key dates</h2>
+    <ol class="timeline" id="timeline"></ol>
+  </section>
+
+  <section class="card" aria-labelledby="grh">
+    <h2 id="grh">Getting ready</h2>
+    <div id="prep"></div>
+    <div id="setlistWrap" hidden>
+      <h3 class="sub">Setlist predictions</h3>
+      <ol class="setlist" id="setlist"></ol>
+    </div>
+    <p class="muted" id="prepEmpty">Concert prep drops here once the tickets land: the Detroit game plan, merch, and a setlist to start learning.</p>
+  </section>
+
+  <section class="card ig" aria-labelledby="igh">
+    <h2 id="igh">Noah on Instagram</h2>
+    <div id="igPosts"></div>
+    <a class="btn ghost" href="https://www.instagram.com/noahkahan/" target="_blank" rel="noopener">Open @noahkahan</a>
+  </section>
+
+  <section class="card" aria-label="Dad’s birthday note">
+    <details class="note">
+      <summary>Read Dad’s birthday note again</summary>
+      <p>Watching you grow up has been the best part of my life. On the court, in school, and everywhere else, you show up and you do the work and you do it with a joy, a love, and a gentleness that is admirable. I am so proud of who you are.</p>
+      <p>Whatever you pick, I hope it’s the best birthday yet, every year.</p>
+      <div class="sig">Love, Dad</div>
+    </details>
+  </section>
+
+  <footer id="foot">Made with love by Dad.</footer>
+</main>
+
+<script>
+  // ===== Dad's settings =====
+  // Paste your published Google Sheet CSV link between the quotes.
+  // Google Sheets: File, Share, Publish to web, pick the tab, choose CSV, Publish.
+  const SHEET_CSV_URL = "";
+  // ==========================
+
+  const DEFAULT_ROWS = [
+{
+"type": "date",
+"date": "2026-11-05T23:59:00-05:00",
+"title": "Presale registration closes",
+"text": "Dad registers for Detroit.",
+"link": ""
+},
+{
+"type": "date",
+"date": "2026-11-10T12:00:00-05:00",
+"title": "Artist Presale",
+"text": "Noon on Ticketmaster. My calendars will be clear and this will be my only focus.",
+"link": ""
+},
+{
+"type": "date",
+"date": "2026-11-11T09:00:00-05:00",
+"title": "Reserved by Spotify presale",
+"text": "Top listeners get a shot at up to two tickets.",
+"link": ""
+},
+{
+"type": "date",
+"date": "2026-11-12T12:00:00-05:00",
+"title": "General sale",
+"text": "Last shot if we need it.",
+"link": ""
+},
+{
+"type": "date",
+"date": "2027-06-10T00:00:00-04:00",
+"title": "Show day at Ford Field",
+"text": "Noah Kahan. Detroit. The Last Of The Bugs World Tour.",
+"link": ""
+},
+{
+"type": "status",
+"date": "",
+"title": "Gift B chosen",
+"text": "done",
+"link": ""
+},
+{
+"type": "status",
+"date": "",
+"title": "Registered for the Detroit presale",
+"text": "now",
+"link": ""
+},
+{
+"type": "status",
+"date": "",
+"title": "Presale code received",
+"text": "next",
+"link": ""
+},
+{
+"type": "status",
+"date": "",
+"title": "In the queue on November 10",
+"text": "next",
+"link": ""
+},
+{
+"type": "status",
+"date": "",
+"title": "Tickets secured",
+"text": "next",
+"link": ""
+},
+{
+"type": "update",
+"date": "2026-11-01",
+"title": "You picked Gift B",
+"text": "Challenge accepted. This page is our mission control from here to Ford Field. Check back, it changes as we go.",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Stick Season",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Northern Attitude",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Dial Drunk",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Homesick",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "She Calls Me Back",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "2026-11-01",
+"title": "Everywhere, Everything",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Orange Juice",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Call Your Mom",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Paul Revere",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Hurt Somebody",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Mess",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Forever",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "The View Between Villages",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Growing Sideways",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Come Over",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Halloween",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "You're Gonna Go Far",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "False Confidence",
+"text": "",
+"link": ""
+},
+{
+"type": "song",
+"date": "",
+"title": "Maine",
+"text": "",
+"link": ""
+}
+];
+
+  const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  const $ = id => document.getElementById(id);
+
+  function parseCSV(text) {
+    const rows = []; let row = [], field = "", q = false;
+    for (let i = 0; i < text.length; i++) {
+      const c = text[i];
+      if (q) {
+        if (c === '"') { if (text[i + 1] === '"') { field += '"'; i++; } else q = false; }
+        else field += c;
+      } else if (c === '"') q = true;
+      else if (c === ",") { row.push(field); field = ""; }
+      else if (c === "\n" || c === "\r") {
+        if (c === "\r" && text[i + 1] === "\n") i++;
+        row.push(field); rows.push(row); row = []; field = "";
+      } else field += c;
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    const head = (rows.shift() || []).map(h => h.trim().toLowerCase());
+    return rows
+      .filter(r => r.some(v => v.trim()))
+      .map(r => Object.fromEntries(head.map((h, i) => [h, (r[i] || "").trim()])));
+  }
+
+  // Sheet rows of a type replace the built in rows of that type.
+  function merge(sheetRows) {
+    const types = new Set(sheetRows.map(r => (r.type || "").toLowerCase()));
+    const keep = DEFAULT_ROWS.filter(r => !types.has(r.type));
+    return keep.concat(sheetRows.map(r => ({ ...r, type: (r.type || "").toLowerCase() })));
+  }
+
+  const parseDate = s => {
+    if (!s) return null;
+    const d = /^\d{4}-\d{2}-\d{2}$/.test(s) ? new Date(s + "T12:00:00") : new Date(s);
+    return isNaN(d) ? null : d;
+  };
+  const TZ = "America/Detroit";
+  const fmtShort = d => d.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: TZ });
+  const fmtLong = d => d.toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", timeZone: TZ }) + " ET";
+
+  let milestones = [], timer = null;
+
+  function renderCountdown() {
+    const now = new Date();
+    const next = milestones.find(m => m.d > now);
+    if (!next) {
+      $("cdTitle").textContent = "See you at Ford Field.";
+      ["cdD","cdH","cdM","cdS"].forEach(id => $(id).textContent = "0");
+      $("cdWhen").textContent = "";
+      return;
+    }
+    let ms = next.d - now;
+    const d = Math.floor(ms / 864e5); ms -= d * 864e5;
+    const h = Math.floor(ms / 36e5); ms -= h * 36e5;
+    const m = Math.floor(ms / 6e4); ms -= m * 6e4;
+    const s = Math.floor(ms / 1e3);
+    $("cdTitle").textContent = next.title;
+    $("cdD").textContent = d; $("cdH").textContent = h; $("cdM").textContent = m; $("cdS").textContent = s;
+    const isShow = /show day/i.test(next.title);
+    $("cdWhen").textContent = isShow
+      ? next.d.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: TZ })
+      : fmtLong(next.d) + (next.text ? ". " + next.text : "");
+  }
+
+  function songEmbed(link) {
+    let m = link.match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|album|playlist)\/([A-Za-z0-9]+)/);
+    if (m) return `<iframe src="https://open.spotify.com/embed/${m[1]}/${m[2]}" height="152" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Spotify player"></iframe>`;
+    if (/music\.apple\.com/.test(link)) {
+      const src = link.replace("music.apple.com", "embed.music.apple.com");
+      return `<iframe src="${esc(src)}" height="175" loading="lazy" allow="autoplay *; encrypted-media *; clipboard-write" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-top-navigation-by-user-activation" title="Apple Music player"></iframe>`;
+    }
+    return "";
+  }
+
+  let songs = [], songIdx = 0;
+  function renderSong() {
+    if (!songs.length) return;
+    const s = songs[songIdx];
+    $("songTitle").textContent = s.title;
+    $("songNote").hidden = !s.text;
+    $("songNote").textContent = s.text || "";
+    const link = s.link || "";
+    $("player").innerHTML = link ? songEmbed(link) : "";
+    const open = $("songOpen");
+    if (link) { open.href = link; open.textContent = /apple/.test(link) ? "Play on Apple Music" : "Play on Spotify"; }
+    else { open.href = "https://music.apple.com/us/search?term=" + encodeURIComponent("Noah Kahan " + s.title); open.textContent = "Play on Apple Music"; }
+  }
+
+  function render(rows) {
+    // Countdown + timeline
+    milestones = rows.filter(r => r.type === "date").map(r => ({ ...r, d: parseDate(r.date) })).filter(r => r.d).sort((a, b) => a.d - b.d);
+    renderCountdown();
+    clearInterval(timer); timer = setInterval(renderCountdown, 1000);
+    const now = new Date();
+    $("timeline").innerHTML = milestones.map(m => `
+      <li class="${m.d < now ? "past" : ""}"><div class="d">${esc(fmtShort(m.d))}</div><div><b>${esc(m.title)}</b>${m.text ? `<span>${esc(m.text)}</span>` : ""}</div></li>`).join("");
+
+    // Status
+    const st = rows.filter(r => r.type === "status");
+    $("status").innerHTML = st.map((r, i) => {
+      const state = (r.text || "next").toLowerCase();
+      const cls = state === "done" ? "done" : state === "now" ? "now" : "";
+      return `<li class="${cls}"><span class="dot" aria-hidden="true">${cls === "done" ? "✓" : i + 1}</span><span class="t">${esc(r.title)}<span class="sr-only"> (${esc(state === "now" ? "in progress" : state)})</span></span></li>`;
+    }).join("");
+
+    // Updates, newest first
+    const up = rows.filter(r => r.type === "update").map(r => ({ ...r, d: parseDate(r.date) })).sort((a, b) => (b.d || 0) - (a.d || 0));
+    $("updates").innerHTML = up.length ? up.map(r => `
+      <article class="update">
+        ${r.d ? `<time datetime="${esc(r.date)}">${esc(r.d.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" }))}</time>` : ""}
+        <h3>${esc(r.title)}</h3>
+        ${r.text ? `<p>${esc(r.text)}</p>` : ""}
+        ${r.link ? `<p><a href="${esc(r.link)}" target="_blank" rel="noopener">Open link</a></p>` : ""}
+      </article>`).join("") : `<p class="muted">Nothing new yet. Dad will post here as things happen.</p>`;
+
+    // Song of the day: same song all day, changes at midnight
+    songs = rows.filter(r => r.type === "song" && r.title);
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const ymd = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" + String(today.getDate()).padStart(2, "0");
+    const pinned = songs.findIndex(r => r.date === ymd);
+    songIdx = pinned >= 0 ? pinned : (songs.length ? Math.floor(today.getTime() / 864e5) % songs.length : 0);
+    renderSong();
+
+    // Getting ready
+    const prep = rows.filter(r => r.type === "prep");
+    const setlist = rows.filter(r => r.type === "setlist");
+    $("prep").innerHTML = prep.map(r => `<div class="prep-item"><b>${esc(r.title)}</b>${r.text ? `<span class="muted">${esc(r.text)}</span>` : ""}</div>`).join("");
+    $("setlist").innerHTML = setlist.map(r => `<li>${esc(r.title)}</li>`).join("");
+    $("setlistWrap").hidden = !setlist.length;
+    $("prepEmpty").hidden = !!(prep.length || setlist.length);
+
+    // Instagram posts
+    const ig = rows.filter(r => r.type === "instagram" && /instagram\.com\/(p|reel)\//.test(r.link || ""));
+    $("igPosts").innerHTML = ig.map(r => `<blockquote class="instagram-media" data-instgrm-permalink="${esc(r.link)}" data-instgrm-version="14"><a href="${esc(r.link)}" target="_blank" rel="noopener">${esc(r.title || "View this post on Instagram")}</a></blockquote>`).join("");
+    if (ig.length) {
+      if (window.instgrm) window.instgrm.Embeds.process();
+      else if (!document.getElementById("igjs")) {
+        const s = document.createElement("script"); s.id = "igjs"; s.async = true; s.src = "https://www.instagram.com/embed.js";
+        document.body.appendChild(s);
+      }
+    }
+  }
+
+  $("songShuffle").addEventListener("click", () => {
+    if (songs.length < 2) return;
+    let n; do { n = Math.floor(Math.random() * songs.length); } while (n === songIdx);
+    songIdx = n; renderSong();
+  });
+
+  render(DEFAULT_ROWS);
+
+  if (SHEET_CSV_URL) {
+    const url = SHEET_CSV_URL + (SHEET_CSV_URL.includes("?") ? "&" : "?") + "cb=" + Date.now();
+    fetch(url, { cache: "no-store" })
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(t => { const rows = parseCSV(t); if (rows.length) render(merge(rows)); })
+      .catch(() => { /* keep the built in content */ });
+  }
+</script>
+</body>
+</html>
