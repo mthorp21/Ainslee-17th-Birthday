@@ -579,17 +579,48 @@
   }
 
   let songs = [], songIdx = 0;
+  // Finds the exact song on Apple Music through Apple's public search, so the button opens the song itself.
+  const appleCache = {};
+  function findOnApple(title) {
+    if (appleCache[title]) return Promise.resolve(appleCache[title]);
+    return new Promise(resolve => {
+      const cb = "am" + Math.random().toString(36).slice(2);
+      const tag = document.createElement("script");
+      const done = url => { clearTimeout(t); delete window[cb]; tag.remove(); if (url) appleCache[title] = url; resolve(url || null); };
+      const t = setTimeout(() => done(null), 6000);
+      window[cb] = data => {
+        const norm = x => String(x || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+        const want = norm(title);
+        const hits = (data && data.results || []).filter(r => /noah kahan/i.test(r.artistName || ""));
+        const best = hits.find(r => norm(r.trackName) === want) || hits.find(r => norm(r.trackName).startsWith(want)) || hits[0];
+        done(best && best.trackViewUrl ? best.trackViewUrl.replace(/&uo=\d+/, "") : null);
+      };
+      tag.onerror = () => done(null);
+      tag.src = "https://itunes.apple.com/search?entity=song&limit=10&country=us&term=" + encodeURIComponent("Noah Kahan " + title) + "&callback=" + cb;
+      document.body.appendChild(tag);
+    });
+  }
+
+  function showSongLink(link) {
+    $("player").innerHTML = songEmbed(link);
+    const open = $("songOpen");
+    open.href = link;
+    open.textContent = /apple/.test(link) ? "Play on Apple Music" : "Play on Spotify";
+  }
+
   function renderSong() {
     if (!songs.length) return;
     const s = songs[songIdx];
     $("songTitle").textContent = s.title;
     $("songNote").hidden = !s.text;
     $("songNote").textContent = s.text || "";
-    const link = s.link || "";
-    $("player").innerHTML = link ? songEmbed(link) : "";
+    if (s.link) { showSongLink(s.link); return; }
     const open = $("songOpen");
-    if (link) { open.href = link; open.textContent = /apple/.test(link) ? "Play on Apple Music" : "Play on Spotify"; }
-    else { open.href = "https://music.apple.com/us/search?term=" + encodeURIComponent("Noah Kahan " + s.title); open.textContent = "Play on Apple Music"; }
+    $("player").innerHTML = "";
+    open.href = "https://music.apple.com/us/search?term=" + encodeURIComponent("Noah Kahan " + s.title);
+    open.textContent = "Play on Apple Music";
+    const asked = songIdx;
+    findOnApple(s.title).then(url => { if (url && asked === songIdx) showSongLink(url); });
   }
 
   function render(rows) {
