@@ -17,6 +17,7 @@
     --cranberry: #2C6E9C;
     --goldenrod: #8CC8EE;
     --line: #BFDDF2;
+    --card: rgba(255,255,255,.78);
     color-scheme: light;
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
@@ -30,7 +31,8 @@
       --pine-soft: #A7C1D2;
       --cranberry: #9DD3F5;
       --goldenrod: #9DD3F5;
-      --line: #2B4658;
+      --line: #3A4F72;
+      --card: rgba(20,30,58,.72);
       color-scheme: dark;
     }
   }
@@ -38,15 +40,51 @@
   html { scroll-padding-top: env(safe-area-inset-top, 0px); }
   body {
     margin: 0;
-    background: var(--birch);
+    background: #CFE8F7;
     color: var(--pine);
     font-family: "Newsreader", Georgia, "Times New Roman", serif;
     font-size: 1.1rem;
     line-height: 1.6;
   }
+
+  /* Whimsical sky: dusk over a coral horizon, streaked clouds */
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(90% 30% at 45% 100%, rgba(255,150,110,.75), transparent 70%),
+      linear-gradient(180deg, #A9B3C4 0%, #B9BAC8 14%, #CDB6C2 30%, #E3A9AE 46%, #F09A8C 60%, #F5876E 72%, #F7975F 84%, #F4AE6E 94%, #EFC08A 100%);
+  }
+  .sky { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .streak {
+    position: absolute; border-radius: 50%;
+    top: var(--t); left: var(--l); width: max(var(--w), 720px); height: min(var(--h), 70px);
+    background:
+      radial-gradient(ellipse at 50% 72%, rgba(245,150,140,.55), transparent 62%),
+      radial-gradient(ellipse 30% 40% at 30% 45%, var(--c) 0%, transparent 100%),
+      radial-gradient(ellipse 35% 45% at 68% 55%, var(--c) 0%, transparent 100%),
+      radial-gradient(ellipse at center, var(--c) 0%, var(--c) 42%, transparent 70%);
+    opacity: var(--o);
+    filter: blur(3px);
+    animation: drift var(--d) ease-in-out infinite alternate;
+  }
+  @keyframes drift { from { transform: translateX(-3vw); } to { transform: translateX(3vw); } }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #2A2840; }
+    body::before {
+      background:
+        radial-gradient(90% 28% at 45% 100%, rgba(230,120,90,.6), transparent 70%),
+        linear-gradient(180deg, #171B2E 0%, #23253D 20%, #3A3150 40%, #5C3F5C 58%, #8C4D5E 74%, #BC6460 88%, #D88763 100%);
+    }
+    .streak {
+      background:
+        radial-gradient(ellipse at 50% 72%, rgba(210,110,110,.35), transparent 62%),
+        radial-gradient(ellipse at center, #2C2940 0%, #2C2940 38%, transparent 70%);
+    }
+  }
   main { max-width: 760px; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
 
-  .hero { padding: 2rem 0 2.5rem; }
+  .hero { padding: 2rem 0 2.5rem; text-shadow: 0 0 18px rgba(255,240,235,.55); }
   .hero h1 {
     font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
     font-weight: 800;
@@ -84,7 +122,7 @@
     text-align: left;
     font: inherit;
     color: inherit;
-    background: var(--paper);
+    background: var(--card); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
     border: 2px solid var(--line);
     border-radius: 4px;
     padding: 1.5rem 1.25rem 1.25rem;
@@ -219,7 +257,7 @@
 
   .reveal {
     margin-top: 1.5rem;
-    background: var(--paper);
+    background: var(--card); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
     border-left: 6px solid var(--cranberry);
     padding: 1.75rem 1.5rem;
     display: none;
@@ -328,6 +366,7 @@
   @media (prefers-reduced-motion: reduce) {
     .reveal.open { animation: none; }
     .path { transition: none; }
+    .streak { animation: none; }
     .gift, .gift.shaking, .path:hover .gift:not(.opened) { animation: none; }
     .gift.opened .lid { animation: none; transform: translate(-34px, -14px) rotate(-24deg); }
     .gift.opened .burst { animation: none; }
@@ -335,6 +374,20 @@
 </style>
 </head>
 <body>
+<div class="sky" aria-hidden="true">
+  <div class="streak" style="--t:1vh;--l:-10vw;--w:60vw;--h:9vh;--c:#6E687E;--o:0.75;--d:60s"></div>
+  <div class="streak" style="--t:4vh;--l:35vw;--w:80vw;--h:12vh;--c:#655F77;--o:0.8;--d:75s"></div>
+  <div class="streak" style="--t:10vh;--l:-20vw;--w:70vw;--h:8vh;--c:#736A80;--o:0.7;--d:68s"></div>
+  <div class="streak" style="--t:15vh;--l:20vw;--w:95vw;--h:14vh;--c:#5F5A72;--o:0.75;--d:82s"></div>
+  <div class="streak" style="--t:24vh;--l:-15vw;--w:65vw;--h:9vh;--c:#7A6D82;--o:0.7;--d:70s"></div>
+  <div class="streak" style="--t:28vh;--l:45vw;--w:70vw;--h:8vh;--c:#7E6E83;--o:0.65;--d:88s"></div>
+  <div class="streak" style="--t:37vh;--l:-25vw;--w:85vw;--h:10vh;--c:#866E82;--o:0.65;--d:76s"></div>
+  <div class="streak" style="--t:45vh;--l:30vw;--w:80vw;--h:7vh;--c:#8E6E7F;--o:0.6;--d:64s"></div>
+  <div class="streak" style="--t:53vh;--l:-10vw;--w:70vw;--h:6vh;--c:#966D7C;--o:0.55;--d:90s"></div>
+  <div class="streak" style="--t:61vh;--l:40vw;--w:60vw;--h:5vh;--c:#9E6E7A;--o:0.5;--d:70s"></div>
+  <div class="streak" style="--t:70vh;--l:-15vw;--w:75vw;--h:4vh;--c:#A56F78;--o:0.45;--d:80s"></div>
+  <div class="streak" style="--t:79vh;--l:25vw;--w:70vw;--h:3.5vh;--c:#AB7177;--o:0.4;--d:66s"></div>
+</div>
 <main>
 
   <section class="hero">
@@ -455,7 +508,7 @@
       : "Challenge accepted. November 10, I am on the clock for you and your plus one.";
     const msg = isA
       ? "Dad! I chose Gift A. Cash it is 💵"
-      : "Dad! I chose Gift B. Noah Kahan, here we come 🐛🎶";
+      : "Dad! I chose Gift B. Noah Kahan, here I come 🐛🎶";
     const sep = /iPhone|iPad|iPod/.test(navigator.userAgent) ? "&" : "?";
     document.getElementById("textDad").href = "sms:" + DAD_PHONE + sep + "body=" + encodeURIComponent(msg);
     locked.classList.add("open");
