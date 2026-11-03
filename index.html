@@ -188,6 +188,12 @@
   .sig { font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.9rem; color: var(--cranberry); line-height: 1; margin-top: .75rem; }
 
   footer { margin-top: 3rem; text-align: center; font-size: .9rem; color: var(--pine-soft); text-shadow: 0 0 14px rgba(255,240,235,.6); }
+  .radio { border-left: 6px solid var(--cranberry); }
+  .radio .eyebrow { margin: 0 0 .25rem; font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cranberry); }
+  .radio h2 { margin-bottom: .5rem; }
+  .radio p { margin: 0 0 .25rem; }
+  .radio .actions { margin: 1rem 0 .75rem; }
+  .radio .btn { background: var(--cranberry); border-color: var(--cranberry); color: #fff; font-size: 1.1rem; padding: .85rem 1.5rem; }
   .proof { margin: 1.25rem 0 0; }
   .proof img { display: block; width: 100%; height: auto; border-radius: 6px; border: 2px solid var(--line); }
   .proof figcaption { margin-top: .6rem; font-size: .95rem; color: var(--pine-soft); }
@@ -232,6 +238,14 @@
       <div class="unit"><div class="n" id="cdS">0</div><div class="l">seconds</div></div>
     </div>
     <p class="when muted small" id="cdWhen"></p>
+  </section>
+
+  <section class="card radio" id="radioCard" aria-labelledby="rdh" hidden>
+    <p class="eyebrow">Free tickets</p>
+    <h2 id="rdh"></h2>
+    <p id="rdText"></p>
+    <div class="actions"><a class="btn" id="rdCall" href="#"></a></div>
+    <p class="muted small" id="rdEnd"></p>
   </section>
 
   <section class="card" aria-labelledby="sth">
@@ -326,6 +340,13 @@
 "date": "2027-06-10T00:00:00-04:00",
 "title": "Show day at Ford Field",
 "text": "Noah Kahan. Detroit. The Last Of The Bugs World Tour.",
+"link": ""
+},
+{
+"type": "update",
+"date": "2026-11-03",
+"title": "Free tickets on the radio",
+"text": "105.3 is giving away tickets every morning this week at 7:10 a.m. It is sad song trivia. Set an alarm and call 616.451.0105.",
 "link": ""
 },
 {
@@ -523,6 +544,13 @@
 "title": "Tickets secured",
 "text": "next",
 "link": ""
+},
+{
+"type": "radio",
+"date": "2026-11-06",
+"title": "Sad song trivia on 105.3",
+"text": "Every morning this week at 7:10 a.m., 105.3 is giving away tickets. Call in and play sad song trivia. You know your Noah, so you are qualified.",
+"link": "6164510105"
 }
 ];
 
@@ -671,6 +699,26 @@
         ${r.text ? `<p>${esc(r.text)}</p>` : ""}
         ${r.link ? `<p><a href="${esc(r.link)}" target="_blank" rel="noopener">Open link</a></p>` : ""}
       </article>`).join("") : `<p class="muted">Nothing new yet. Dad will post here as things happen.</p>`;
+
+    // Radio giveaway card, hides itself after its last day
+    const rd = rows.find(r => r.type === "radio" && r.title);
+    let showRd = !!rd;
+    if (rd) {
+      const last = parseDate(rd.date);
+      if (last) { last.setHours(23, 59, 59, 999); showRd = last >= new Date(); }
+    }
+    $("radioCard").hidden = !showRd;
+    if (showRd) {
+      $("rdh").textContent = rd.title;
+      $("rdText").textContent = rd.text || "";
+      const digits = (rd.link || "").replace(/\D/g, "");
+      const ten = digits.length === 11 && digits[0] === "1" ? digits.slice(1) : digits;
+      const shown = ten.length === 10 ? ten.slice(0, 3) + "." + ten.slice(3, 6) + "." + ten.slice(6) : rd.link;
+      $("rdCall").href = "tel:" + (ten.length === 10 ? "+1" + ten : digits);
+      $("rdCall").textContent = "Call " + shown;
+      const endD = parseDate(rd.date);
+      $("rdEnd").textContent = endD ? "Runs through " + endD.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) + "." : "";
+    }
 
     // Song of the day: same song all day, changes at midnight
     songs = rows.filter(r => r.type === "song" && r.title);
