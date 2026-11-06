@@ -181,6 +181,34 @@
   ol.setlist li { padding: .15rem 0; }
   h3.sub { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-size: 1.15rem; margin: 1.25rem 0 .4rem; }
 
+  /* Tour setlist tracker */
+  .live { display: flex; align-items: center; gap: 1rem; text-decoration: none; margin: 0 0 1.4rem;
+          background: var(--cranberry); color: var(--paper); border-radius: 6px; padding: 1.1rem 1.15rem 1.15rem 1.25rem;
+          transition: transform .15s ease, box-shadow .15s ease; box-shadow: 0 6px 0 var(--pine); }
+  .live:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--pine); }
+  .live:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--pine); }
+  .live:focus-visible { outline: 3px solid var(--goldenrod); outline-offset: 3px; }
+  .live-txt { flex: 1; display: grid; gap: .15rem; }
+  .live-tag { display: inline-flex; align-items: center; gap: .45rem; font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.3rem; line-height: 1; }
+  .pip { width: .6rem; height: .6rem; border-radius: 50%; background: #FF8A70; box-shadow: 0 0 0 0 rgba(255,138,112,.7); animation: pip 1.6s ease-out infinite; }
+  @keyframes pip { 70% { box-shadow: 0 0 0 .5rem rgba(255,138,112,0); } 100% { box-shadow: 0 0 0 0 rgba(255,138,112,0); } }
+  .live-big { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 800; font-size: clamp(1.35rem, 5.5vw, 1.75rem); line-height: 1.08; letter-spacing: -.01em; }
+  .live-sub { font-size: .98rem; opacity: .9; }
+  .live-go { flex: none; width: 3rem; height: 3rem; border-radius: 50%; background: var(--paper); color: var(--cranberry); display: grid; place-items: center; }
+  .tour .meta { margin: -.5rem 0 1rem; }
+  .learn { display: flex; align-items: center; gap: .75rem; margin: 0 0 1rem; }
+  .learn .bar { flex: 1; height: .6rem; border-radius: 999px; background: var(--line); overflow: hidden; }
+  .learn .bar i { display: block; height: 100%; width: 0; background: var(--cranberry); transition: width .3s ease; }
+  .learn b { font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; white-space: nowrap; }
+  ol.tourset { list-style: none; padding: 0; margin: 0; columns: 2 15rem; column-gap: 1.5rem; }
+  ol.tourset li { break-inside: avoid; }
+  ol.tourset li.enc { column-span: all; font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 700; color: var(--cranberry); padding: .8rem 0 .2rem; }
+  .ts { appearance: none; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; width: 100%;
+        display: grid; grid-template-columns: 1.9rem 1fr; gap: .6rem; align-items: center; padding: .35rem 0; }
+  .ts .dot { width: 1.9rem; height: 1.9rem; font-size: .85rem; }
+  .ts[aria-pressed="true"] .dot { background: var(--cranberry); border-color: var(--cranberry); color: var(--paper); }
+  .ts[aria-pressed="true"] .t { color: var(--pine-soft); }
+  .ts:focus-visible { outline: 3px solid var(--goldenrod); outline-offset: 2px; border-radius: 4px; }
   .ig blockquote.instagram-media { margin: 0 auto 1rem !important; min-width: 0 !important; max-width: 100% !important; }
 
   details.note summary { cursor: pointer; font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 700; font-size: 1.15rem; }
@@ -188,12 +216,6 @@
   .sig { font-family: "Caveat", "Bradley Hand", cursive; font-size: 1.9rem; color: var(--cranberry); line-height: 1; margin-top: .75rem; }
 
   footer { margin-top: 3rem; text-align: center; font-size: .9rem; color: var(--pine-soft); text-shadow: 0 0 14px rgba(255,240,235,.6); }
-  .radio { border-left: 6px solid var(--cranberry); }
-  .radio .eyebrow { margin: 0 0 .25rem; font-family: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif; font-weight: 700; font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; color: var(--cranberry); }
-  .radio h2 { margin-bottom: .5rem; }
-  .radio p { margin: 0 0 .25rem; }
-  .radio .actions { margin: 1rem 0 .75rem; }
-  .radio .btn { background: var(--cranberry); border-color: var(--cranberry); color: #fff; font-size: 1.1rem; padding: .85rem 1.5rem; }
   .proof { margin: 1.25rem 0 0; }
   .proof img { display: block; width: 100%; height: auto; border-radius: 6px; border: 2px solid var(--line); }
   .proof figcaption { margin-top: .6rem; font-size: .95rem; color: var(--pine-soft); }
@@ -202,6 +224,9 @@
 
   @media (prefers-reduced-motion: reduce) {
     li.now .dot { animation: none; }
+    .learn .bar i { transition: none; }
+    .pip { animation: none; }
+    .live, .live:hover, .live:active { transition: none; transform: none; }
     .streak { animation: none; }
   }
 </style>
@@ -228,6 +253,21 @@
     <p>Mission control from here to Ford Field. Countdowns, my progress, a song a day, and everything Noah. Check back, it keeps changing.</p>
   </header>
 
+  <section class="card tour" aria-labelledby="tsh">
+    <a class="live" id="tsLink" href="https://www.setlist.fm/setlists/noah-kahan-7bcdeef4.html" target="_blank" rel="noopener">
+      <span class="live-txt">
+        <span class="live-tag"><span class="pip" aria-hidden="true"></span>Noah is on tour</span>
+        <span class="live-big">What did he play last show?</span>
+        <span class="live-sub">Every setlist, song by song, on setlist.fm</span>
+      </span>
+      <span class="live-go" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26"><path d="M7 17L17 7M9 7h8v8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </a>
+    <h2 id="tsh">Tour setlist tracker</h2>
+    <p class="meta muted small" id="tsMeta"></p>
+    <div class="learn"><div class="bar" aria-hidden="true"><i id="tsBar"></i></div><b id="tsCount" aria-live="polite"></b></div>
+    <ol class="tourset" id="tourset"></ol>
+  </section>
+
   <section class="card countdown" aria-labelledby="cdh">
     <h2 id="cdh" hidden>Countdown</h2>
     <p class="next"><span class="muted small">Next up</span><b id="cdTitle">Loading</b></p>
@@ -238,14 +278,6 @@
       <div class="unit"><div class="n" id="cdS">0</div><div class="l">seconds</div></div>
     </div>
     <p class="when muted small" id="cdWhen"></p>
-  </section>
-
-  <section class="card radio" id="radioCard" aria-labelledby="rdh" hidden>
-    <p class="eyebrow">Free tickets</p>
-    <h2 id="rdh"></h2>
-    <p id="rdText"></p>
-    <div class="actions"><a class="btn" id="rdCall" href="#"></a></div>
-    <p class="muted small" id="rdEnd"></p>
   </section>
 
   <section class="card" aria-labelledby="sth">
@@ -340,13 +372,6 @@
 "date": "2027-06-10T00:00:00-04:00",
 "title": "Show day at Ford Field",
 "text": "Noah Kahan. Detroit. The Last Of The Bugs World Tour.",
-"link": ""
-},
-{
-"type": "update",
-"date": "2026-11-03",
-"title": "Free tickets on the radio",
-"text": "105.3 is giving away tickets every morning this week at 7:10 a.m. It is sad song trivia. Set an alarm and call 616.451.0105.",
 "link": ""
 },
 {
@@ -546,11 +571,172 @@
 "link": ""
 },
 {
-"type": "radio",
-"date": "2026-11-06",
-"title": "Sad song trivia on 105.3",
-"text": "Every morning this week at 7:10 a.m., 105.3 is giving away tickets. Call in and play sad song trivia. You know your Noah, so you are qualified.",
-"link": "6164510105"
+"type": "tourinfo",
+"date": "2026-10-10",
+"title": "",
+"text": "The typical Great Divide Tour set. Tap a song once you know every word.",
+"link": "https://www.setlist.fm/setlists/noah-kahan-7bcdeef4.html"
+},
+{
+"type": "tourset",
+"date": "",
+"title": "American Cars",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Doors",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "All My Love",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Deny Deny Deny",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Staying Still",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Haircut",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Downfall",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Dashboard",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Dial Drunk",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Willing and Able",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Porch Light",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Orbiter",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Paid Time Off",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Maine",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Dan",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "The View Between Villages",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Northern Attitude",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "The Great Divide",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Orange Juice",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "New Perspective",
+"text": "",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "End of August",
+"text": "encore",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Homesick",
+"text": "encore",
+"link": ""
+},
+{
+"type": "tourset",
+"date": "",
+"title": "Stick Season",
+"text": "encore",
+"link": ""
 }
 ];
 
@@ -674,6 +860,39 @@
   }
 
   function render(rows) {
+    // Tour setlist tracker
+    const tinfo = rows.find(r => r.type === "tourinfo");
+    const tset = rows.filter(r => r.type === "tourset" && r.title);
+    const td = tinfo && parseDate(tinfo.date);
+    $("tsMeta").textContent = tinfo ? (tinfo.text || "") : "";
+    if (tinfo && tinfo.link) $("tsLink").href = tinfo.link;
+    let learned = {};
+    try { learned = JSON.parse(localStorage.getItem("noahLearned") || "{}"); } catch (e) {}
+    let n = 0, encDone = false;
+    $("tourset").innerHTML = tset.map(r => {
+      let pre = "";
+      if (/encore/i.test(r.text || "") && !encDone) { encDone = true; pre = `<li class="enc">Encore</li>`; }
+      n++;
+      const on = !!learned[r.title];
+      return pre + `<li><button class="ts" type="button" aria-pressed="${on}" data-song="${esc(r.title)}"><span class="dot" aria-hidden="true">${on ? "✓" : n}</span><span class="t">${esc(r.title)}</span></button></li>`;
+    }).join("");
+    const tally = () => {
+      const k = tset.filter(r => learned[r.title]).length;
+      $("tsCount").textContent = tset.length ? `${k} of ${tset.length} learned` : "";
+      $("tsBar").style.width = tset.length ? (k / tset.length * 100) + "%" : "0";
+    };
+    tally();
+    $("tourset").onclick = e => {
+      const b = e.target.closest(".ts"); if (!b) return;
+      const t = b.dataset.song, on = !learned[t];
+      if (on) learned[t] = 1; else delete learned[t];
+      try { localStorage.setItem("noahLearned", JSON.stringify(learned)); } catch (e) {}
+      b.setAttribute("aria-pressed", on);
+      const idx = [...$("tourset").querySelectorAll(".ts")].indexOf(b) + 1;
+      b.querySelector(".dot").textContent = on ? "✓" : idx;
+      tally();
+    };
+
     // Countdown + timeline
     milestones = rows.filter(r => r.type === "date").map(r => ({ ...r, d: parseDate(r.date) })).filter(r => r.d).sort((a, b) => a.d - b.d);
     renderCountdown();
@@ -699,26 +918,6 @@
         ${r.text ? `<p>${esc(r.text)}</p>` : ""}
         ${r.link ? `<p><a href="${esc(r.link)}" target="_blank" rel="noopener">Open link</a></p>` : ""}
       </article>`).join("") : `<p class="muted">Nothing new yet. Dad will post here as things happen.</p>`;
-
-    // Radio giveaway card, hides itself after its last day
-    const rd = rows.find(r => r.type === "radio" && r.title);
-    let showRd = !!rd;
-    if (rd) {
-      const last = parseDate(rd.date);
-      if (last) { last.setHours(23, 59, 59, 999); showRd = last >= new Date(); }
-    }
-    $("radioCard").hidden = !showRd;
-    if (showRd) {
-      $("rdh").textContent = rd.title;
-      $("rdText").textContent = rd.text || "";
-      const digits = (rd.link || "").replace(/\D/g, "");
-      const ten = digits.length === 11 && digits[0] === "1" ? digits.slice(1) : digits;
-      const shown = ten.length === 10 ? ten.slice(0, 3) + "." + ten.slice(3, 6) + "." + ten.slice(6) : rd.link;
-      $("rdCall").href = "tel:" + (ten.length === 10 ? "+1" + ten : digits);
-      $("rdCall").textContent = "Call " + shown;
-      const endD = parseDate(rd.date);
-      $("rdEnd").textContent = endD ? "Runs through " + endD.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" }) + "." : "";
-    }
 
     // Song of the day: same song all day, changes at midnight
     songs = rows.filter(r => r.type === "song" && r.title);
